@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - reports_data:/app/static/reports
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - JWT_SECRET=supersecretkeychangeinproduction
+      - BLOCKCHAIN_PROVIDER_URL=http://hardhat:8545
+      - CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  reports_data:
